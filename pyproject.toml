@@ -1,0 +1,17 @@
+[project]
+name = "comfyui-frameselector"
+version = "1.0.0"
+description = "ComfyUI custom nodes: extract every frame from a video, pause the workflow and let you select which images continue to the next step."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+keywords = ["comfyui", "custom-nodes", "video", "frames", "image-selector"]
+dependencies = [
+    "opencv-python>=4.8",
+    "numpy",
+    "pillow",
+]
+
+[tool.comfy]
+Publisher = "your-github-username"   # ← 改成你的 GitHub 用户名
+DisplayName = "ComfyUI FrameSelector (视频逐帧提取 + 图像选择器)"
