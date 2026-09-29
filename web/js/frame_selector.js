@@ -14,8 +14,8 @@ const NODE_TYPE = "FrameSelector";
 .fs-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #33363b;font-size:14px;font-weight:600;}
 .fs-header button{background:none;border:none;color:#9aa0a6;font-size:16px;cursor:pointer;}
 .fs-grid{display:flex;flex-wrap:wrap;gap:8px;padding:12px;overflow:auto;background:#17181b;}
-.fs-grid img{border:2px solid transparent;border-radius:6px;cursor:pointer;object-fit:cover;background:#000;}
-.fs-grid img.fs-sel{border-color:#4a9eff;box-shadow:0 0 0 2px rgba(74,158,255,.35);}
+.fs-grid img{border:2px solid transparent;border-radius:6px;cursor:pointer;object-fit:cover;background:#000;opacity:0.35;}
+.fs-grid img.fs-selected{border-color:#4a9aff;box-shadow:0 0 0 2px rgba(74,158,255,.35);opacity:1;}
 .fs-grid .fs-empty{color:#8a8f98;padding:30px;}
 .fs-footer{display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid #33363b;font-size:13px;}
 .fs-footer .fs-info{margin-right:auto;color:#9aa0a6;}
@@ -105,8 +105,8 @@ async function openDialog(nodeId) {
     const setAll = (on) => {
         grid.querySelectorAll("img").forEach((im) => {
             const i = Number(im.dataset.i);
-            if (on) { selected.add(i); } else { selected.delete(i); }
-            im.classList.toggle("fs-sel", on);
+            if (on) { selected.add(i); im.classList.add("fs-selected"); im.style.opacity = "1"; }
+            else { selected.delete(i); im.classList.remove("fs-selected"); }
         });
         update();
     };
@@ -132,12 +132,16 @@ async function openDialog(nodeId) {
                 img.title = `frame #${i}`;
                 img.style.width = `${thumbW}px`;
                 img.src = `${api.api_base || ""}/frame_selector/img?node_id=${encodeURIComponent(nodeId)}&i=${i}`;
-                img.classList.add("fs-sel");
-                selected.add(i);
+                // 默认不选中任何图片，用户需要手动勾选
+                /* img.classList.add("fs-sel");
+                   selected.add(i); */
+                img.classList.add("fs-selected");
+                img.setAttribute("data-index", i);
+                img.style.opacity = "0.7";
                 img.addEventListener("click", () => {
                     const idx = Number(img.dataset.i);
-                    if (selected.has(idx)) { selected.delete(idx); img.classList.remove("fs-sel"); }
-                    else { selected.add(idx); img.classList.add("fs-sel"); }
+                    if (selected.has(idx)) { selected.delete(idx); img.classList.remove("fs-selected"); }
+                    else { selected.add(idx); img.classList.add("fs-selected"); img.style.opacity = "1"; }
                     update();
                 });
                 grid.appendChild(img);
